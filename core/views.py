@@ -94,12 +94,15 @@ def crear_categoria(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
         if form.is_valid():
-            form.save()
+            categoria = form.save(commit=False)
+            if not categoria.slug:
+                categoria.slug = slugify(categoria.nombre)
+            categoria.save()
+            messages.success(request, f'Categoría "{categoria.nombre}" creada con éxito.')
             return redirect('dashboard')
     else:
         form = CategoriaForm()
     
-    # Asegúrate de que este path coincida con tu estructura de carpetas:
     return render(request, 'core/crear_categoria.html', {'form': form})
 
 
