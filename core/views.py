@@ -94,15 +94,12 @@ def crear_categoria(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
         if form.is_valid():
-            categoria = form.save(commit=False)
-            if not categoria.slug:
-                categoria.slug = slugify(categoria.nombre)
-            categoria.save()
-            messages.success(request, 'Categoría creada con éxito.')
-            return redirect('dashboard')
+            form.save()
+            return redirect('galeria')  # Redirige a la galería u otra vista
     else:
         form = CategoriaForm()
-    return render(request, 'core/foto_form.html', {'form': form, 'titulo_vista': 'Agregar Nueva Categoría'})
+    
+    return render(request, 'core/crear_categoria.html', {'form': form})
 
 
 @login_required
