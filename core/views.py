@@ -89,16 +89,15 @@ def eliminar_foto(request, pk):
     return render(request, 'core/foto_confirm_delete.html', {'foto': foto})
 
 
+
 @login_required
 def crear_categoria(request):
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
         if form.is_valid():
-            categoria = form.save(commit=False)
-            if not categoria.slug:
-                categoria.slug = slugify(categoria.nombre)
-            categoria.save()
-            messages.success(request, f'Categoría "{categoria.nombre}" creada con éxito.')
+            categoria = form.save()
+            # Elimina cualquier referencia a categoria.slug aquí
+            messages.success(request, 'Categoría creada con éxito.')
             return redirect('dashboard')
     else:
         form = CategoriaForm()
