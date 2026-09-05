@@ -95,10 +95,11 @@ def crear_categoria(request):
         form = CategoriaForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('galeria')  # Redirige a la galería u otra vista
+            return redirect('dashboard')
     else:
         form = CategoriaForm()
     
+    # Asegúrate de que este path coincida con tu estructura de carpetas:
     return render(request, 'core/crear_categoria.html', {'form': form})
 
 
