@@ -123,7 +123,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
+# Archivos estáticos (CSS, JavaScript, Imágenes)
 STATIC_URL = 'static/'
+
+# ESTA LÍNEA ES LA QUE FALTA O ESTÁ COMENTADA:
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Configuración para WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'core' / 'static',
