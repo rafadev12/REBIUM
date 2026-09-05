@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 py-12">
+    <div class="max-w-md w-full bg-stone-900 border border-white/10 p-8 rounded-sm shadow-2xl text-center space-y-6">
+        
+        <!-- Icono de advertencia -->
+        <div class="w-16 h-16 bg-red-950/50 border border-red-500/30 rounded-full flex items-center justify-center mx-auto text-red-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+        </div>
+
+        <div class="space-y-2">
+            <h2 class="font-cinzel text-xl font-bold text-white tracking-wider">
+                ¿Eliminar Categoría?
+            </h2>
+            <p class="text-sm text-stone-400">
+                Estás a punto de eliminar la categoría <span class="text-rebiumGold font-semibold">"{{ categoria.nombre }}"</span>.
+            </p>
+            <p class="text-xs text-stone-500">
+                Esta acción eliminará la categoría y sus fotografías asociadas de forma permanente.
+            </p>
+        </div>
+
+        <!-- Formulario POST para confirmar -->
+        <form method="POST" class="flex items-center justify-center gap-4 pt-4">
+            {% csrf_token %}
+            <a href="{% url 'dashboard' %}" class="px-5 py-2.5 bg-stone-800 text-stone-300 font-cinzel text-xs uppercase tracking-wider rounded-sm hover:bg-stone-700 transition-colors">
+                Cancelar
+            </a>
+            <button type="submit" class="px-5 py-2.5 bg-red-800 text-white font-cinzel text-xs font-semibold uppercase tracking-wider rounded-sm hover:bg-red-700 transition-colors shadow-lg">
+                Sí, Eliminar
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<style>
+    body { overflow: hidden; background-color: #0d0d0d; }
+    
+    /* Layout Masonry estilo Pinterest más compacto (más columnas = imágenes más pequeñas) */
+    .masonry-grid {
+        column-count: 6;
+        column-gap: 0.35rem;
+    }
+    @media (min-width: 640px) { .masonry-grid { column-count: 8; } }
+    @media (min-width: 1024px) { .masonry-grid { column-count: 12; } }
+    @media (min-width: 1280px) { .masonry-grid { column-count: 15; } }
+
+    .masonry-item {
+        break-inside: avoid;
+        margin-bottom: 0.35rem;
+    }
+</style>
+
+<div id="gallery-viewport" class="fixed inset-0 w-screen h-screen overflow-hidden cursor-grab active:cursor-grabbing select-none z-10">
+    <div id="gallery-track" class="absolute top-0 left-0 masonry-grid p-6 opacity-0 transition-opacity duration-700 ease-out will-change-transform" style="width: 250vw;">
+        
+        {% for foto in fotos %}
+            <div class="masonry-item gallery-card relative rounded-none overflow-hidden bg-stone-900 group shadow-md border border-white/5 transition-transform duration-200 hover:scale-[1.05] hover:z-20">
+                <img src="{{ foto.imagen.url }}" alt="{{ foto.titulo }}" class="w-full h-auto object-cover pointer-events-none block">
+                
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 flex flex-col justify-end">
+                    <span class="text-[6px] font-semibold uppercase tracking-widest text-rebiumGold leading-tight">{{ foto.categoria.nombre }}</span>
+                    <h3 class="font-cinzel text-[9px] font-bold text-white truncate">{{ foto.titulo }}</h3>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-span-full py-20 text-center text-stone-400 font-cinzel text-sm">
+                No hay fotografías disponibles. Sube imágenes desde el panel.
+            </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const viewport = document.getElementById('gallery-viewport');
+    const track = document.getElementById('gallery-track');
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    
+    // Posición inicial centrada
+    let currentX = -window.innerWidth * 0.25;
+    let currentY = -window.innerHeight * 0.15;
+    let targetX = currentX;
+    let targetY = currentY;
+
+    let autoVx = 0;
+    let autoVy = 0;
+
+    const ease = 0.08;
+
+    setTimeout(() => {
+        track.classList.remove('opacity-0');
+    }, 100);
+
+    function clampPosition(valX, valY) {
+        const trackRect = track.getBoundingClientRect();
+        const minX = window.innerWidth - trackRect.width;
+        const minY = window.innerHeight - trackRect.height;
+        const maxX = 0;
+        const maxY = 0;
+
+        return {
+            x: Math.min(maxX, Math.max(minX, valX)),
+            y: Math.min(maxY, Math.max(minY, valY))
+        };
+    }
+
+    function animate() {
+        if (!isDragging) {
+            targetX += autoVx;
+            targetY += autoVy;
+        }
+
+        const clamped = clampPosition(targetX, targetY);
+        targetX = clamped.x;
+        targetY = clamped.y;
+
+        currentX += (targetX - currentX) * ease;
+        currentY += (targetY - currentY) * ease;
+
+        track.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('mousemove', (e) => {
+        if (isDragging) return;
+
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+
+        const deltaX = (e.clientX - centerX) / centerX;
+        const deltaY = (e.clientY - centerY) / centerY;
+
+        const speedMultiplier = 4; 
+        autoVx = -deltaX * speedMultiplier;
+        autoVy = -deltaY * speedMultiplier;
+    });
+
+    viewport.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - targetX;
+        startY = e.clientY - targetY;
+        autoVx = 0;
+        autoVy = 0;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        targetX = e.clientX - startX;
+        targetY = e.clientY - startY;
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    viewport.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        startX = e.touches[0].clientX - targetX;
+        startY = e.touches[0].clientY - targetY;
+        autoVx = 0;
+        autoVy = 0;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        targetX = e.touches[0].clientX - startX;
+        targetY = e.touches[0].clientY - startY;
+    });
+
+    window.addEventListener('touchend', () => { isDragging = false; });
+
+    animate();
+});
+</script>
+{% endblock %}

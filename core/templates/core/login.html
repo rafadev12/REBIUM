@@ -1,0 +1,29 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="max-w-md mx-auto px-6 py-20">
+    <div class="bg-white p-8 shadow-2xl border border-rebiumGold rounded-sm">
+        <div class="text-center mb-8">
+            <span class="font-cinzel text-xs tracking-widest text-rebiumBurgundy block uppercase">Acceso Privado</span>
+            <h2 class="font-cinzel text-2xl font-bold text-rebiumDark">Área de Autor</h2>
+        </div>
+
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs uppercase tracking-wider font-semibold text-rebiumDark mb-2">Usuario</label>
+                <input type="text" name="username" required class="w-full px-3 py-2 border border-rebiumGold rounded focus:outline-none focus:border-rebiumBurgundy">
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase tracking-wider font-semibold text-rebiumDark mb-2">Contraseña</label>
+                <input type="password" name="password" required class="w-full px-3 py-2 border border-rebiumGold rounded focus:outline-none focus:border-rebiumBurgundy">
+            </div>
+
+            <button type="submit" class="w-full bg-rebiumBurgundy text-rebiumBg py-3 text-xs uppercase tracking-widest font-semibold rounded hover:bg-rebiumDark transition shadow-md">
+                Ingresar al Panel
+            </button>
+        </form>
+    </div>
+</section>
+{% endblock %}

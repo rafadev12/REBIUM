@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<section class="max-w-2xl mx-auto px-6 py-12">
+    <div class="bg-white p-8 shadow-2xl border border-rebiumGold rounded">
+        <h2 class="font-cinzel text-2xl font-bold text-rebiumDark mb-6 border-b border-rebiumGold pb-2">{{ titulo_vista }}</h2>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div>
+                    <label class="block text-xs uppercase tracking-wider font-semibold text-rebiumDark mb-2">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <p class="text-xs text-red-600 mt-1">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div class="flex justify-between items-center pt-4">
+                <a href="{% url 'dashboard' %}" class="text-xs uppercase tracking-widest text-stone-500 hover:text-stone-800">Cancelar</a>
+                <button type="submit" class="bg-rebiumBurgundy text-rebiumBg px-6 py-2.5 rounded text-xs uppercase tracking-widest font-semibold hover:bg-rebiumDark transition shadow">
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REBIUM - Museo de Momentos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rebiumBg: '#f2e5c5',
+                        rebiumGold: '#f2d9a0',
+                        rebiumBurgundy: '#560b18',
+                        rebiumDark: '#3b010b',
+                        rebiumBright: '#f5162d',
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-rebiumBg text-rebiumDark font-sans min-h-screen flex flex-col justify-between selection:bg-rebiumBurgundy selection:text-rebiumBg">
+
+<div id="preloader" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#3b010b] text-white transition-opacity duration-700 ease-out">
+    
+    <div class="text-center animate-fade-in flex flex-col items-center space-y-3">
+        <img src="{% static 'core/img/rebium_logo.png' %}" alt="Logotipo de REBIUM" class="h-36 sm:h-52 w-auto object-contain">
+        <p class="font-cinzel text-xs sm:text-sm tracking-[0.25em] text-stone-400 uppercase">
+            Museo de Momentos
+        </p>
+    </div>
+
+    <div class="mt-8 w-48 sm:w-64">
+        <div class="h-[2px] w-full bg-stone-800 rounded-full overflow-hidden relative">
+            <div id="loader-bar" class="h-full bg-[#d4af37] w-0 transition-all duration-300 ease-out"></div>
+        </div>
+        <p id="loader-text" class="text-[10px] font-mono text-center text-stone-500 mt-2 uppercase tracking-widest">
+            Cargando...
+        </p>
+    </div>
+
+</div>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+        animation: fadeIn 1.2s ease-out forwards;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const preloader = document.getElementById('preloader');
+    const loaderBar = document.getElementById('loader-bar');
+    const loaderText = document.getElementById('loader-text');
+
+    let progress = 0;
+
+    // Simulación de carga progresiva suave
+    const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 10;
+
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+
+            // Transición de salida una vez completada la carga
+            setTimeout(() => {
+                preloader.classList.add('opacity-0', 'pointer-events-none');
+                
+                // Eliminar completamente del DOM tras la animación
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 700);
+            }, 300);
+        }
+
+        if (loaderBar) loaderBar.style.width = `${progress}%`;
+    }, 120);
+});
+</script>
+
+    <!-- Navegación Superior -->
+    <nav class="bg-rebiumBurgundy text-rebiumBg border-b-2 border-rebiumGold shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            
+           <!-- Logo en el Nav -->
+                <a href="{% url 'home' %}" class="flex items-center space-x-3 group">
+                    <img src="{% static 'core/img/rebium_logo.png' %}" alt="REBIUM Logo" class="h-20 sm:h-31 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                </a>
+
+            <!-- Menú de Escritorio -->
+            <div class="hidden md:flex items-center space-x-8 text-xs font-semibold uppercase tracking-widest">
+                <a href="{% url 'home' %}" class="hover:text-rebiumGold transition py-1 border-b-2 border-transparent hover:border-rebiumGold">Exposición</a>
+                <a href="{% url 'about' %}" class="hover:text-rebiumGold transition py-1 border-b-2 border-transparent hover:border-rebiumGold">Sobre Me</a>
+                <a href="{% url 'galeria' %}" class="block text-xs uppercase tracking-widest text-rebiumBg hover:text-rebiumGold py-2 border-b border-white/5">Galería</a>
+            </div>
+
+            <!-- Botón Hamburguesa Móvil -->
+            <button onclick="toggleMenu()" class="md:hidden text-rebiumGold focus:outline-none p-1" aria-label="Abrir menú">
+                <svg id="iconHamburger" class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+                </svg>
+                <svg id="iconClose" class="w-6 h-6 fill-current hidden" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M18.3 5.71a1 1 0 00-1.41 0L12 10.59 7.11 5.7a1 1 0 00-1.41 1.41L10.59 12l-4.89 4.89a1 1 0 101.41 1.41L12 13.41l4.89 4.89a1 1 0 001.41-1.41L13.41 12l4.89-4.89a1 1 0 000-1.4%)"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="menuMovil" class="hidden md:hidden bg-rebiumDark border-t border-rebiumGold/40 px-6 py-4 space-y-3 shadow-inner">
+            <a href="{% url 'home' %}" class="block text-xs uppercase tracking-widest text-rebiumBg hover:text-rebiumGold py-2 border-b border-white/5">Exposición</a>
+            <a href="{% url 'about' %}" class="block text-xs uppercase tracking-widest text-rebiumBg hover:text-rebiumGold py-2 border-b border-white/5">Sobre Me</a>
+            <a href="{% url 'galeria' %}" class="block text-xs uppercase tracking-widest text-rebiumBg hover:text-rebiumGold py-2 border-b border-white/5">Galería</a>
+        </div>
+    </nav>
+
+    <!-- Contenido Dinámico -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Pie de Página -->
+    <footer class="bg-rebiumDark text-rebiumBg border-t-2 border-rebiumGold py-8 mt-12 text-center text-xs">
+        <!-- Logo en el Footer -->
+        <div class="flex flex-col items-center justify-center py-8">
+            <img src="{% static 'core/img/rebium_logo.png' %}" alt="REBIUM" class="h-24 sm:h-32 w-auto object-contain mb-3">
+        </div>
+        <div class="max-w-7xl mx-auto px-6 space-y-3">
+            <p class="font-cinzel text-sm tracking-widest text-rebiumGold">REBIUM &bull; MUSEO DE MOMENTOS</p>
+            <p class="text-stone-400 font-light">Costa Rica</p>
+            <p class="text-stone-500 text-[10px] uppercase tracking-wider">&copy; {% now "Y" %} REBIUM. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Botón Flotante de WhatsApp -->
+    <a href="https://wa.me/50672342452?text=Hola,%20me%20gustaría%20solicitar%20información%20sobre%20una%20sesión%20fotográfica" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 z-50 flex items-center justify-center group"
+       aria-label="Contactar por WhatsApp">
+        
+        <svg class="w-7 h-7 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3 18.6-68.1-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+
+        <span class="absolute right-16 bg-stone-900 text-white text-xs px-3 py-1.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none font-sans">
+            ¡Cotiza por WhatsApp!
+        </span>
+    </a>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menuMovil');
+            const iconHamburger = document.getElementById('iconHamburger');
+            const iconClose = document.getElementById('iconClose');
+            
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                iconHamburger.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+                iconHamburger.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
